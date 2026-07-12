@@ -2,7 +2,8 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
-import Vehicles from "../pages/Vehicles"
+import Vehicles from "../pages/Vehicles";
+import Expense from "../pages/Expense";
 import Driver from "../pages/Driver";
 import TripDispatcher from "../pages/TripDispatcher";
 import Maintenance from "../pages/Maintenance";
@@ -49,6 +50,11 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/vehicles" element={<Vehicles />} />
+        <Route path="/expenses" element={<Expense />} />
+        <Route path="/driver" element={<Driver />} />
+        <Route path="/trips" element={<TripDispatcher />} />
         <Route path="/dashboard" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Dashboard /></ProtectedRoute>} />
         <Route path="/vehicles" element={<ProtectedRoute allowedRoles={OPERATION_ROLES}><Vehicles /></ProtectedRoute>} />
         <Route path="/driver" element={<ProtectedRoute allowedRoles={DRIVER_ROLES}><Driver /></ProtectedRoute>} />
@@ -57,7 +63,7 @@ function AppRoutes() {
         <Route path="/drivers" element={<Navigate to="/driver" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
 export default AppRoutes;
