@@ -1,11 +1,55 @@
+-- 1. Create the Roles Master Table
+CREATE TABLE roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL -- 'Fleet Manager', 'Driver', etc.
+);
+
+-- 2. Create the Users Table linking to Roles
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     dob DATE NOT NULL,
     gender ENUM('Male', 'Female', 'Other') NOT NULL,
-    role ENUM('Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst') NOT NULL,
     email VARCHAR(120) UNIQUE NOT NULL,
     mobile VARCHAR(15) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    role_id INT,                          -- Connects the user to a specific role
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+CREATE TABLE vehicles (
+    vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_number VARCHAR(50) UNIQUE NOT NULL,
+    vehicle_name VARCHAR(100) NOT NULL,
+    vehicle_type VARCHAR(50) NOT NULL,
+    max_load_capacity DECIMAL(10, 2) NOT NULL, -- Stored in kg or lbs
+    odometer DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    acquisition_cost DECIMAL(15, 2) NOT NULL,  -- Crucial for the Vehicle ROI calculation later
+    status ENUM('Available', 'On Trip', 'In Shop', 'Retired') NOT NULL DEFAULT 'Available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO vehicles (registration_number, vehicle_name, vehicle_type, max_load_capacity, odometer, acquisition_cost, status) 
+VALUES
+    -- Available Vehicles (Ready for Dispatch)
+    ('MH-04-AB-1234', 'Tata Ace Gold', 'Mini Truck', 750.00, 12500.00, 14500.00, 'Available'),
+    ('MH-43-XY-9876', 'Tata LPT 1109', 'Heavy Truck', 7500.00, 45200.00, 120000.00, 'Available'),
+    ('MH-46-CD-5678', 'Eicher Pro 2049', 'Light Truck', 2700.00, 34500.00, 45000.00, 'Available'),
+    ('MH-01-EF-1010', 'Maruti Suzuki Eeco Cargo', 'Van', 500.00, 8500.00, 12000.00, 'Available'),
+    ('MH-04-GH-2020', 'Tata Signa 2823.T', 'Heavy Truck', 20000.00, 112000.00, 350000.00, 'Available'),
+    ('MH-43-JK-3030', 'Mahindra Bolero Maxi Truck', 'Pickup', 1200.00, 18400.00, 21000.00, 'Available'),
+
+    -- In Shop Vehicles (To test that they are hidden from dispatch dropdowns)
+    ('MH-04-MN-4567', 'Maruti Suzuki Super Carry', 'Mini Truck', 740.00, 9500.00, 15000.00, 'In Shop'),
+    ('MH-46-LM-4040', 'Mahindra Furio 7', 'Light Truck', 4000.00, 56000.50, 60000.00, 'In Shop'),
+    
+    -- On Trip Vehicles (To test that they cannot be double-booked)
+    ('MH-43-PQ-1122', 'Ashok Leyland Dost+', 'Pickup', 1500.00, 67800.25, 23500.00, 'On Trip'),
+    ('MH-01-ST-7070', 'BharatBenz 1917R', 'Heavy Truck', 12000.00, 89000.00, 250000.00, 'On Trip'),
+    
+    -- Retired Vehicles (To test that they are permanently removed from active operations)
+    ('MH-04-RS-9999', 'Mahindra Bolero Pik-Up', 'Pickup', 1000.00, 250000.00, 18000.00, 'Retired'),
+    ('MH-46-UV-8080', 'Ashok Leyland Partner', 'Light Truck', 3800.00, 310500.00, 42000.00, 'Retired');
+
+select * from vehicles;
