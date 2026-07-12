@@ -161,5 +161,3 @@ CREATE TABLE expenses (
 INSERT INTO expenses (trip_id, vehicle_id, toll_amount, other_amount, maintenance_log_id) VALUES
 (1, 9, 120.00, 0.00, NULL),
 (NULL, 2, 340.00, 150.00, 3);
-
-select * from expenses;
