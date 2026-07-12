@@ -1,14 +1,3 @@
-import DashboardLayout from "../layouts/DashboardLayout";
-import WelcomeBanner from "../components/dashboard/WelcomeBanner";
-import KPIGrid from "../components/dashboard/KPIGrid";
-import ChartCard from "../components/dashboard/ChartCard";
-import VehicleStatusChart from "../components/dashboard/VehicleStatusChart";
-import MonthlyTripsChart from "../components/dashboard/MonthlyTripsChart";
-import RecentTripsTable from "../components/dashboard/RecentTripsTable";
-import { dashboardKPIs } from "../data/dashboardData";
-import { vehicleStatusData } from "../data/dashboardData";
-import { monthlyTripsData } from "../data/dashboardData";
-import { recentTripsData } from "../data/dashboardData";
 import { useEffect, useState } from "react";
 import {
   Bar,
@@ -20,6 +9,11 @@ import {
   YAxis,
 } from "recharts";
 import api from "../services/api";
+import DashboardLayout from "../layouts/DashboardLayout";
+import WelcomeBanner from "../components/dashboard/WelcomeBanner";
+import KPIGrid from "../components/dashboard/KPIGrid";
+import ChartCard from "../components/dashboard/ChartCard";
+import VehicleStatusChart from "../components/dashboard/VehicleStatusChart";
 
 function MonthlyTripsChart({ data }) {
   return (
@@ -119,8 +113,7 @@ function Dashboard() {
         if (!isMounted) return;
 
         setError(
-          requestError.response?.data?.error ||
-          "Failed to load dashboard data."
+          requestError.response?.data?.error || "Failed to load dashboard data."
         );
       } finally {
         if (isMounted) {
@@ -159,33 +152,10 @@ function Dashboard() {
         <KPIGrid data={dashboardData.dashboardKPIs} />
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Vehicle Status"
-            subtitle="Current fleet distribution"
-          >
+          <ChartCard title="Vehicle Status" subtitle="Current fleet distribution">
             <VehicleStatusChart data={dashboardData.vehicleStatusData} />
           </ChartCard>
 
-          <ChartCard
-            title="Monthly Trips"
-            subtitle="Trips completed over the last seven months"
-          >
-            <MonthlyTripsChart data={monthlyTripsData} />
-          </ChartCard>
-
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-            Fuel Cost Chart
-          </div>
-
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-            Fleet Utilization Chart
-          </div>
-        </section>
-
-        {/* Recent Trips */}
-        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-          <RecentTripsTable data={recentTripsData} />
-        </section>
           <ChartCard title="Monthly Trips" subtitle="Trips created this year">
             <MonthlyTripsChart data={dashboardData.monthlyTripsData} />
           </ChartCard>

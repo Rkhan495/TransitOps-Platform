@@ -23,7 +23,7 @@ function AddVehicleModal({ isOpen, onClose, onSave }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
@@ -38,17 +38,21 @@ function AddVehicleModal({ isOpen, onClose, onSave }) {
       return;
     }
 
-    onSave(formData);
+    try {
+      await onSave(formData);
 
-    setFormData({
-      regNo: "",
-      vehicle: "",
-      type: "",
-      capacity: "",
-      odometer: "",
-      acquisitionCost: "",
-      status: "Available",
-    });
+      setFormData({
+        regNo: "",
+        vehicle: "",
+        type: "",
+        capacity: "",
+        odometer: "",
+        acquisitionCost: "",
+        status: "Available",
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
