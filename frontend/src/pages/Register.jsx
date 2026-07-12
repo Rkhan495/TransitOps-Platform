@@ -9,7 +9,7 @@ import {
   ChevronDown,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ROLES = [
   "Fleet Manager",
@@ -77,6 +77,7 @@ const INITIAL_FORM = {
 };
 
 function Register() {
+  const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -178,11 +179,13 @@ function Register() {
         role_id: ROLE_MAP[form.role],
       });
 
-      alert("Registration Successful!");
-
-      console.log(response.data);
+      // alert("Registration Successful!");
+      alert("Registration Successful! Please login.");
 
       setForm(INITIAL_FORM);
+
+      navigate("/login");
+      // setForm(INITIAL_FORM);
 
     } catch (err) {
       alert(
