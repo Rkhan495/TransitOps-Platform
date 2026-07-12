@@ -61,63 +61,37 @@ function FormField({
 }
 
 const INITIAL_FORM = {
-  fullName: "",
   email: "",
-  mobile: "",
   password: "",
-  confirmPassword: "",
   role: "",
-  agreeToTerms: false,
 };
 
-function Register() {
+function Login() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const passwordRules = {
-    minLength: form.password.length >= 8,
-    uppercase: /[A-Z]/.test(form.password),
-    lowercase: /[a-z]/.test(form.password),
-    number: /\d/.test(form.password),
-    special: /[@$!%*?&]/.test(form.password),
-  };
 
   const validateForm = () => {
     const newErrors = {};
-
-    // Full Name
-    if (!/^[A-Za-z ]{3,50}$/.test(form.fullName.trim())) {
-      newErrors.fullName =
-        "Full name should contain only letters and spaces (3-50 characters).";
-    }
     // Email
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Enter a valid email address.";
-    }
-    // Mobile
-    if (!/^[6-9]\d{9}$/.test(form.mobile)) {
-      newErrors.mobile = "Enter a valid 10-digit mobile number.";
     }
     // Password
     if (!Object.values(passwordRules).every(Boolean)) {
       newErrors.password = "Password doesn't meet all the required criteria.";
     }
-    // Confirm Password
-    if (form.password !== form.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
-    }
     // Role
     if (!form.role) {
       newErrors.role = "Please select a role.";
     }
-    // Terms
-    if (!form.agreeToTerms) {
-      newErrors.agreeToTerms = "You must accept the Terms & Conditions.";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+    
+  if (!form.password.trim()) {
+      newErrors.password = "Password is required.";
+  }
   };
 
   const handleChange = (e) => {
@@ -137,22 +111,16 @@ function Register() {
   // /api/auth/register endpoint once the backend is ready. Keeping the
   // submit handler separate from the form UI means no JSX changes
   // will be needed when that wiring happens.
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
-    try {
-      setSubmitting(true);
-
-      // TODO: Call backend API here
-      console.log(form);
-
-    } catch (err) {
-      console.error(err);
-    } finally {
+    setSubmitting(true);
+    if (!validateForm()) {
       setSubmitting(false);
+      return;
     }
+
+    console.log("Successfully Logged in", form);
+    setSubmitting(false);
   };
 
   return (
@@ -178,10 +146,10 @@ function Register() {
         </div>
 
         <div className="my-10 md:my-0">
-          <p className="text-base leading-relaxed text-slate-700">
+          {/* <p className="text-base leading-relaxed text-slate-700">
             Create your TransitOps account and start managing your transport
             operations efficiently.
-          </p>
+          </p> */}
 
           <p className="mt-8 text-sm font-medium uppercase tracking-wide text-slate-500">
             Available roles
@@ -202,26 +170,17 @@ function Register() {
         <p className="text-xs text-slate-400">TRANSITOPS &copy; 2026</p>
       </div>
 
-      {/*Registration form*/}
+      {/*Login form*/}
       <div className="lg:col-span-3 flex items-center justify-center bg-slate-950 px-6 py-12 md:px-12">
         <div className="w-full max-w-md">
           <h2 className="text-2xl font-bold text-white md:text-3xl">
-            Create your account
+            Sign in to your account
           </h2>
           <p className="mt-2 text-sm text-slate-400">
-            Register to access the TransitOps platform.
+            Enter your credentials to Continue
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            <FormField
-              label="Full Name"
-              icon={User}
-              name="fullName"
-              value={form.fullName}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              error={errors.fullName}
-            />
             <FormField
               label="Email Address"
               icon={Mail}
@@ -233,18 +192,6 @@ function Register() {
               error={errors.email}
             />
             <FormField
-              label="Mobile Number"
-              icon={Phone}
-              type="tel"
-              name="mobile"
-              value={form.mobile}
-              onChange={handleChange}
-              maxLength={name === "mobile" ? 10 : undefined}
-              inputMode={name === "mobile" ? "numeric" : undefined}
-              placeholder="Enter your mobile number"
-              error={errors.mobile}
-            />
-            <FormField
               label="Password"
               icon={Lock}
               type="password"
@@ -254,17 +201,6 @@ function Register() {
               placeholder="Create a password"
               error={errors.password}
             />
-            <FormField
-              label="Confirm Password"
-              icon={Lock}
-              type="password"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              placeholder="Re-enter your password"
-              error={errors.confirmPassword}
-            />
-
             {/* Role dropdown */}
             <div className="space-y-1.5">
               <label
@@ -298,45 +234,23 @@ function Register() {
               </div>
             </div>
 
-            {/* Terms checkbox */}
-            <label
-              htmlFor="agreeToTerms"
-              className="flex items-center gap-2.5 text-sm text-slate-400"
-            >
-              <input
-                id="agreeToTerms"
-                name="agreeToTerms"
-                type="checkbox"
-                checked={form.agreeToTerms}
-                onChange={handleChange}
-                required
-                className="h-4 w-4 rounded border-slate-700 bg-slate-900 text-orange-500 focus:ring-orange-500 focus:ring-offset-slate-950"
-              />
-              I agree to the{" "}
-              <span className="text-orange-500 hover:text-orange-400">
-                Terms &amp; Conditions
-              </span>
-              {errors.agreeToTerms && (
-                <p className="text-xs text-red-500">{errors.agreeToTerms}</p>
-              )}
-            </label>
 
             <button
               type="submit"
               disabled={submitting}
               className="w-full rounded-lg bg-orange-500 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600 disabled:opacity-60"
             >
-              Register
+              Login
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-400">
-            Already have an account?{" "}
+            Don't have an Account?{" "}
             <Link
-              to="/login"
+              to="/register"
               className="font-medium text-orange-500 hover:text-orange-400 transition-colors"
             >
-              Sign In
+              Register
             </Link>
           </p>
         </div>
@@ -345,4 +259,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
