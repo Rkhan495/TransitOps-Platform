@@ -52,4 +52,33 @@ VALUES
     ('MH-04-RS-9999', 'Mahindra Bolero Pik-Up', 'Pickup', 1000.00, 250000.00, 18000.00, 'Retired'),
     ('MH-46-UV-8080', 'Ashok Leyland Partner', 'Light Truck', 3800.00, 310500.00, 42000.00, 'Retired');
 
-select * from vehicles;
+CREATE TABLE drivers (
+    driver_id INT AUTO_INCREMENT PRIMARY KEY,
+    driver_name VARCHAR(100) NOT NULL,
+    license_number VARCHAR(50) UNIQUE NOT NULL,
+    license_category VARCHAR(20) NOT NULL,
+    license_expiry DATE NOT NULL,
+    contact_number VARCHAR(15) NOT NULL,
+    trip_completion_pct DECIMAL(5, 2) DEFAULT 0.00,
+    safety_score INT DEFAULT 100,
+    status ENUM('Available', 'On Trip', 'Off Duty', 'Suspended') NOT NULL DEFAULT 'Available',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO drivers (driver_name, license_number, license_category, license_expiry, contact_number, trip_completion_pct, safety_score, status) 
+VALUES
+    -- Available Drivers (Ready for Dispatch)
+    ('Alex', 'DL-88213', 'LMV', '2028-12-31', '9876500001', 96.00, 95, 'Available'),
+    ('Ramesh', 'DL-55321', 'HMV', '2026-11-05', '9123400005', 92.50, 90, 'Available'),
+    ('Anita', 'DL-11223', 'LMV', '2025-05-12', '9988700006', 100.00, 100, 'Available'),
+    
+    -- Suspended/Expired Drivers (To test that they are blocked from trip assignment)
+    ('John', 'DL-44120', 'HMV', '2024-03-15', '9822000002', 81.00, 45, 'Suspended'),
+    
+    -- On Trip Drivers (To test that they cannot be double-booked)
+    ('Priya', 'DL-77031', 'LMV', '2027-08-20', '9911000003', 99.00, 98, 'On Trip'),
+    
+    -- Off Duty Drivers (To test that they are excluded from active dispatch)
+    ('Suresh', 'DL-90045', 'HMV', '2027-01-10', '9744000004', 88.00, 85, 'Off Duty');
+
+select * from drivers;
