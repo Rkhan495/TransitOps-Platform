@@ -3,6 +3,7 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Vehicles from "../pages/Vehicles"
+import Expense from "../pages/Expense"
 
 function AppRoutes(){
   return(
@@ -12,6 +13,7 @@ function AppRoutes(){
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path='/vehicles' element={<Vehicles/>} />
+        <Route path='/Expenses' element={<Expense />} />
       </Routes>
     </BrowserRouter>
   )
