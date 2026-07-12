@@ -1,7 +1,7 @@
 -- 1. Create the Roles Master Table
 CREATE TABLE roles (
     role_id INT AUTO_INCREMENT PRIMARY KEY,
-    role_name VARCHAR(50) UNIQUE NOT NULL -- 'Fleet Manager', 'Driver', etc.
+    role_name VARCHAR(50) UNIQUE NOT NULL -- 'Fleet Manager', 'Despatcher', etc.
 );
 
 -- 2. Create the Users Table linking to Roles
