@@ -3,8 +3,12 @@ import WelcomeBanner from "../components/dashboard/WelcomeBanner";
 import KPIGrid from "../components/dashboard/KPIGrid";
 import ChartCard from "../components/dashboard/ChartCard";
 import VehicleStatusChart from "../components/dashboard/VehicleStatusChart";
+import MonthlyTripsChart from "../components/dashboard/MonthlyTripsChart";
+import RecentTripsTable from "../components/dashboard/RecentTripsTable";
 import { dashboardKPIs } from "../data/dashboardData";
 import { vehicleStatusData } from "../data/dashboardData";
+import { monthlyTripsData } from "../data/dashboardData";
+import { recentTripsData } from "../data/dashboardData";
 
 function Dashboard() {
   return (
@@ -25,9 +29,12 @@ function Dashboard() {
             <VehicleStatusChart data={vehicleStatusData} />
           </ChartCard>
 
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-            Monthly Trips Chart
-          </div>
+          <ChartCard
+            title="Monthly Trips"
+            subtitle="Trips completed over the last seven months"
+          >
+            <MonthlyTripsChart data={monthlyTripsData} />
+          </ChartCard>
 
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
             Fuel Cost Chart
@@ -40,13 +47,7 @@ function Dashboard() {
 
         {/* Recent Trips */}
         <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
-          <h2 className="text-lg font-semibold text-slate-700">
-            Recent Trips Table
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            RecentTripsTable component will be rendered here.
-          </p>
+          <RecentTripsTable data={recentTripsData} />
         </section>
       </div>
     </DashboardLayout>
