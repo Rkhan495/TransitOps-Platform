@@ -9,7 +9,7 @@ from app.extensions import bcrypt
 from . import auth_bp
 
 
-@auth_bp.route("/api/auth/create-user", methods=["POST"])
+@auth_bp.route("/create-user", methods=["POST"])
 def create_user():
 
     data = request.get_json()
@@ -60,7 +60,7 @@ def create_user():
     }), 201
 
 
-@auth_bp.route("/api/auth/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
 
     data = request.get_json()

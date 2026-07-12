@@ -8,8 +8,8 @@ import {
   ChevronDown,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
 const ROLES = [
   "Fleet Manager",
   "Dispatcher",
@@ -70,29 +70,48 @@ function Login() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
-    // Email
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Enter a valid email address.";
     }
-    // Password
-    if (!Object.values(passwordRules).every(Boolean)) {
-      newErrors.password = "Password doesn't meet all the required criteria.";
+
+    if (!form.password.trim()) {
+      newErrors.password = "Password is required.";
     }
-    // Role
+
     if (!form.role) {
       newErrors.role = "Please select a role.";
     }
+
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
-    
-  if (!form.password.trim()) {
-      newErrors.password = "Password is required.";
-  }
   };
+  // const validateForm = () => {
+  //   const newErrors = {};
+  //   // Email
+  //   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+  //     newErrors.email = "Enter a valid email address.";
+  //   }
+  //   // Password
+  //   if (!Object.values(passwordRules).every(Boolean)) {
+  //     newErrors.password = "Password doesn't meet all the required criteria.";
+  //   }
+  //   // Role
+  //   if (!form.role) {
+  //     newErrors.role = "Please select a role.";
+  //   }
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+
+  // if (!form.password.trim()) {
+  //     newErrors.password = "Password is required.";
+  // }
+  // };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -111,16 +130,52 @@ function Login() {
   // /api/auth/register endpoint once the backend is ready. Keeping the
   // submit handler separate from the form UI means no JSX changes
   // will be needed when that wiring happens.
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    if (!validateForm()) {
-      setSubmitting(false);
-      return;
-    }
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setSubmitting(true);
+  //   if (!validateForm()) {
+  //     setSubmitting(false);
+  //     return;
+  //   }
 
-    console.log("Successfully Logged in", form);
-    setSubmitting(false);
+  //   console.log("Successfully Logged in", form);
+  //   setSubmitting(false);
+  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    try {
+      setSubmitting(true);
+
+      const response = await api.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
+
+      localStorage.setItem("token", response.data.token);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+
+      alert("Login Successful");
+
+      console.log(response.data);
+      navigate("/dashboard", { replace: true });
+
+    } catch (err) {
+
+      alert(
+        err.response?.data?.error ||
+        "Login Failed"
+      );
+
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
