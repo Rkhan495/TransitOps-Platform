@@ -68,6 +68,26 @@ function DashboardSidebar() {
     role: storedUser.role || "Fleet Manager",
   };
 
+  const normalizedRole = (currentUser.role || "").toLowerCase().replace(/\s+/g, "");
+
+  const canAccess = (itemName) => {
+    if (normalizedRole === "fleetmanager") return true;
+
+    const accessMap = {
+      Dashboard: ["fleetmanager", "safetyofficer", "dispatcher", "despatcher", "financeanalyst"],
+      Vehicles: ["fleetmanager", "safetyofficer", "dispatcher", "despatcher", "financeanalyst"],
+      Drivers: ["fleetmanager", "safetyofficer", "dispatcher", "despatcher"],
+      Trips: ["fleetmanager", "dispatcher", "despatcher"],
+      Maintenance: ["fleetmanager", "safetyofficer", "financeanalyst"],
+      "Fuel Logs": ["fleetmanager", "safetyofficer", "financeanalyst"],
+      Expenses: ["fleetmanager", "financeanalyst"],
+      Reports: ["fleetmanager", "financeanalyst"],
+      Settings: ["fleetmanager"],
+    };
+
+    return (accessMap[itemName] || []).includes(normalizedRole);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -94,7 +114,7 @@ function DashboardSidebar() {
         </p>
 
         <ul className="space-y-1">
-          {navigationItems.map((item) => {
+          {navigationItems.filter((item) => canAccess(item.name)).map((item) => {
             const Icon = item.icon;
 
             return (
