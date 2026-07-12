@@ -11,3 +11,5 @@ auth_bp = Blueprint("auth", __name__)
 from .auth import auth_bp
 from .health import health_bp
 from .dashboard import dashboard_bp
+from .driver import driver_bp
+from .trip import trip_bp

@@ -22,10 +22,12 @@ def create_app():
     # app.register_blueprint(auth_bp)
     # app.register_blueprint(dashboard_bp)
     
-    from app.routes import auth_bp, health_bp, dashboard_bp
+    from app.routes import auth_bp, health_bp, dashboard_bp, driver_bp, trip_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(health_bp, url_prefix='/api/health')
     app.register_blueprint(dashboard_bp, url_prefix='/api')
+    app.register_blueprint(driver_bp, url_prefix='/api')
+    app.register_blueprint(trip_bp, url_prefix='/api')
 
     return app

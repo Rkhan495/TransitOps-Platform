@@ -25,7 +25,7 @@ const navigationItems = [
   },
   {
     name: "Drivers",
-    path: "/drivers",
+    path: "/driver",
     icon: Users,
   },
   {
