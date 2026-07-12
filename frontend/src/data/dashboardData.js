@@ -86,3 +86,77 @@ export const vehicleStatusData = [
     color: "#94A3B8",
   },
 ];
+
+export const monthlyTripsData = [
+  {
+    month: "Jan",
+    trips: 120,
+  },
+  {
+    month: "Feb",
+    trips: 148,
+  },
+  {
+    month: "Mar",
+    trips: 172,
+  },
+  {
+    month: "Apr",
+    trips: 158,
+  },
+  {
+    month: "May",
+    trips: 201,
+  },
+  {
+    month: "Jun",
+    trips: 189,
+  },
+  {
+    month: "Jul",
+    trips: 224,
+  },
+];
+
+export const recentTripsData = [
+  {
+    id: "TRP-1001",
+    vehicle: "MH12AB4587",
+    driver: "Rohit Sharma",
+    source: "Pune",
+    destination: "Mumbai",
+    status: "Completed",
+  },
+  {
+    id: "TRP-1002",
+    vehicle: "MH14CD2145",
+    driver: "Anjali Patil",
+    source: "Nashik",
+    destination: "Pune",
+    status: "On Trip",
+  },
+  {
+    id: "TRP-1003",
+    vehicle: "MH20EF7890",
+    driver: "Sanjay Verma",
+    source: "Nagpur",
+    destination: "Amravati",
+    status: "Maintenance",
+  },
+  {
+    id: "TRP-1004",
+    vehicle: "MH43GH6578",
+    driver: "Priya Singh",
+    source: "Kolhapur",
+    destination: "Satara",
+    status: "Scheduled",
+  },
+  {
+    id: "TRP-1005",
+    vehicle: "MH48JK3201",
+    driver: "Vikram Joshi",
+    source: "Aurangabad",
+    destination: "Pune",
+    status: "Completed",
+  },
+];
