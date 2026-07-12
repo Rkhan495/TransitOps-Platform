@@ -110,4 +110,56 @@ VALUES
     -- TR007: A completed historical trip for the analytics dashboard
     ('TR007', 'Surat Facility', 'Navsari Hub', 2, 1, 7000.00, 40.00, 'Completed');
 
-select * from trips;
+CREATE TABLE maintenance_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    service_type VARCHAR(100) NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL,
+    service_date DATE NOT NULL,
+    status ENUM('Active', 'Completed') NOT NULL DEFAULT 'Active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
+);
+
+INSERT INTO maintenance_logs (vehicle_id, service_type, cost, service_date, status) 
+VALUES
+    -- Active records (These correspond to vehicles 7 and 8 which we previously set to 'In Shop')
+    (7, 'Oil Change', 2500.00, '2026-07-07', 'Active'),
+    (8, 'Tyre Replace', 6200.00, '2026-07-10', 'Active'),
+    
+    -- Completed historical record (Vehicle 1 is 'Available', this is just past history for reports)
+    (1, 'Engine Repair', 18000.00, '2026-06-15', 'Completed');
+
+CREATE TABLE fuel_logs (
+    fuel_log_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_id INT NOT NULL,
+    log_date DATE NOT NULL,
+    liters DECIMAL(10, 2) NOT NULL,
+    fuel_cost DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
+);
+
+INSERT INTO fuel_logs (vehicle_id, log_date, liters, fuel_cost) VALUES
+(4, '2026-07-05', 42.00, 3150.00),
+(2, '2026-07-06', 110.00, 8400.00),
+(1, '2026-07-06', 28.00, 2050.00);
+
+CREATE TABLE expenses (
+    expense_id INT AUTO_INCREMENT PRIMARY KEY,
+    trip_id INT DEFAULT NULL,
+    vehicle_id INT NOT NULL,
+    toll_amount DECIMAL(10, 2) DEFAULT 0.00,
+    other_amount DECIMAL(10, 2) DEFAULT 0.00,
+    maintenance_log_id INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE SET NULL,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE,
+    FOREIGN KEY (maintenance_log_id) REFERENCES maintenance_logs(log_id) ON DELETE SET NULL
+);
+
+INSERT INTO expenses (trip_id, vehicle_id, toll_amount, other_amount, maintenance_log_id) VALUES
+(1, 9, 120.00, 0.00, NULL),
+(NULL, 2, 340.00, 150.00, 3);
+
+select * from expenses;
