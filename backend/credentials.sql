@@ -81,4 +81,33 @@ VALUES
     -- Off Duty Drivers (To test that they are excluded from active dispatch)
     ('Suresh', 'DL-90045', 'HMV', '2027-01-10', '9744000004', 88.00, 85, 'Off Duty');
 
-select * from drivers;
+CREATE TABLE trips (
+    trip_id INT AUTO_INCREMENT PRIMARY KEY,
+    trip_reference VARCHAR(20) UNIQUE NOT NULL, 
+    source VARCHAR(150) NOT NULL,
+    destination VARCHAR(150) NOT NULL,
+    vehicle_id INT DEFAULT NULL, 
+    driver_id INT DEFAULT NULL,  
+    cargo_weight DECIMAL(10, 2) NOT NULL,
+    planned_distance DECIMAL(10, 2) NOT NULL,
+    status ENUM('Draft', 'Dispatched', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE SET NULL,
+    FOREIGN KEY (driver_id) REFERENCES drivers(driver_id) ON DELETE SET NULL
+);
+
+INSERT INTO trips (trip_reference, source, destination, vehicle_id, driver_id, cargo_weight, planned_distance, status) 
+VALUES
+    -- TR001: Active trip (Matches the 'On Trip' status of Vehicle 9 and Driver 5 from previous dummy data)
+    ('TR001', 'Gandhinagar Depot', 'Ahmedabad Hub', 9, 5, 500.00, 45.00, 'Dispatched'),
+    
+    -- TR004: Draft trip awaiting a driver (Driver is NULL)
+    ('TR004', 'Vatva Industrial Area', 'Sanand Warehouse', 1, NULL, 450.00, 25.00, 'Draft'),
+    
+    -- TR006: Cancelled trip (No vehicle or driver assigned anymore)
+    ('TR006', 'Mansa', 'Kalol Depot', NULL, NULL, 1200.00, 60.00, 'Cancelled'),
+
+    -- TR007: A completed historical trip for the analytics dashboard
+    ('TR007', 'Surat Facility', 'Navsari Hub', 2, 1, 7000.00, 40.00, 'Completed');
+
+select * from trips;
