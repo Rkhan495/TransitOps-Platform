@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask_cors import CORS
 from app.extensions import db, bcrypt, migrate, jwt
 from config import Config
@@ -18,7 +18,16 @@ def create_app():
     
     from app import models
     
-    from app.routes import auth_bp
-    app.register_blueprint(auth_bp)
+    # from app.routes import auth_bp, dashboard_bp
+    # app.register_blueprint(auth_bp)
+    # app.register_blueprint(dashboard_bp)
+    
+    from app.routes import auth_bp, health_bp, dashboard_bp, driver_bp, trip_bp
+
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(health_bp, url_prefix='/api/health')
+    app.register_blueprint(dashboard_bp, url_prefix='/api')
+    app.register_blueprint(driver_bp, url_prefix='/api')
+    app.register_blueprint(trip_bp, url_prefix='/api')
 
     return app

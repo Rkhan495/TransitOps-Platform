@@ -1,11 +1,7 @@
 function WelcomeBanner() {
-  /**
-   * Temporary mock user.
-   * Replace with Auth Context later.
-   */
-
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const currentUser = {
-    firstName: "Adi",
+    firstName: storedUser.full_name?.split(" ")[0] || "User",
   };
 
   const today = new Date();

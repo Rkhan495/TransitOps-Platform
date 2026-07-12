@@ -10,7 +10,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const navigationItems = [
   {
@@ -25,7 +25,7 @@ const navigationItems = [
   },
   {
     name: "Drivers",
-    path: "/drivers",
+    path: "/driver",
     icon: Users,
   },
   {
@@ -61,14 +61,17 @@ const navigationItems = [
 ];
 
 function DashboardSidebar() {
-  /**
-   * Temporary mock user.
-   * Replace later using Auth Context / JWT.
-   */
-
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const navigate = useNavigate();
   const currentUser = {
-    name: "Raven K.",
-    role: "Fleet Manager",
+    name: storedUser.full_name || "Fleet User",
+    role: storedUser.role || "Fleet Manager",
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -99,10 +102,9 @@ function DashboardSidebar() {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "bg-orange-50 text-orange-600"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    `group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${isActive
+                      ? "bg-orange-50 text-orange-600"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                     }`
                   }
                 >
@@ -131,7 +133,7 @@ function DashboardSidebar() {
       <div className="border-t border-slate-200 p-4">
         <div className="mb-4 flex items-center gap-3 rounded-xl bg-slate-50 p-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white">
-            RK
+            {(currentUser.name || "F").split(" ").map((part) => part[0]).slice(0, 2).join("")}
           </div>
 
           <div className="min-w-0">
@@ -146,6 +148,7 @@ function DashboardSidebar() {
         <button
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
           type="button"
+          onClick={handleLogout}
         >
           <LogOut size={18} />
           Logout

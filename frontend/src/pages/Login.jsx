@@ -8,7 +8,7 @@ import {
   ChevronDown,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 const ROLES = [
   "Fleet Manager",
@@ -70,6 +70,7 @@ function Login() {
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
@@ -141,40 +142,41 @@ function Login() {
   //   setSubmitting(false);
   // };
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  try {
-    setSubmitting(true);
+    try {
+      setSubmitting(true);
 
-    const response = await api.post("/api/auth/login", {
-      email: form.email,
-      password: form.password,
-    });
+      const response = await api.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
 
-    localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.token);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(response.data.user)
-    );
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
 
-    alert("Login Successful");
+      alert("Login Successful");
 
-    console.log(response.data);
+      console.log(response.data);
+      navigate("/dashboard", { replace: true });
 
-  } catch (err) {
+    } catch (err) {
 
-    alert(
-      err.response?.data?.error ||
-      "Login Failed"
-    );
+      alert(
+        err.response?.data?.error ||
+        "Login Failed"
+      );
 
-  } finally {
-    setSubmitting(false);
-  }
-};
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-5">
