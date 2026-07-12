@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../services/api";
 import {
   Car,
   User,
@@ -8,7 +9,7 @@ import {
   ChevronDown,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ROLES = [
   "Fleet Manager",
@@ -16,7 +17,12 @@ const ROLES = [
   "Safety Officer",
   "Financial Analyst",
 ];
-
+const ROLE_MAP = {
+  "Fleet Manager": 1,
+  "Dispatcher": 2,
+  "Safety Officer": 3,
+  "Financial Analyst": 4,
+};
 /**
  * Reusable text input for the registration form.
  * Kept UI-only and controlled — the parent owns all state,
@@ -71,6 +77,7 @@ const INITIAL_FORM = {
 };
 
 function Register() {
+  const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
@@ -129,7 +136,7 @@ function Register() {
     }
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : inputValue,
     }));
   };
 
@@ -137,6 +144,23 @@ function Register() {
   // /api/auth/register endpoint once the backend is ready. Keeping the
   // submit handler separate from the form UI means no JSX changes
   // will be needed when that wiring happens.
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) return;
+
+  //   try {
+  //     setSubmitting(true);
+
+  //     // TODO: Call backend API here
+  //     console.log(form);
+
+  //   } catch (err) {
+  //     console.error(err);
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -145,11 +169,29 @@ function Register() {
     try {
       setSubmitting(true);
 
-      // TODO: Call backend API here
-      console.log(form);
+      const response = await api.post("/api/auth/create-user", {
+        full_name: form.fullName,
+        dob: "2003-01-01",          // TODO: Replace with DOB field later
+        gender: "Male",             // TODO: Replace with Gender field later
+        email: form.email,
+        mobile: form.mobile,
+        password: form.password,
+        role_id: ROLE_MAP[form.role],
+      });
+
+      // alert("Registration Successful!");
+      alert("Registration Successful! Please login.");
+
+      setForm(INITIAL_FORM);
+
+      navigate("/login");
+      // setForm(INITIAL_FORM);
 
     } catch (err) {
-      console.error(err);
+      alert(
+        err.response?.data?.error ||
+        "Registration Failed"
+      );
     } finally {
       setSubmitting(false);
     }
