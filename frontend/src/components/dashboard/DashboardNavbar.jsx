@@ -1,14 +1,10 @@
 import { Bell, Search } from "lucide-react";
 
 function DashboardNavbar() {
-  /**
-   * Temporary user object.
-   * Replace with Auth Context later.
-   */
-
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const currentUser = {
-    name: "Raven Kumar",
-    role: "Fleet Manager",
+    name: storedUser.full_name || "Fleet User",
+    role: storedUser.role || "Fleet Manager",
   };
 
   return (
@@ -52,7 +48,7 @@ function DashboardNavbar() {
 
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-500 font-semibold text-white">
-            RK
+            {(currentUser.name || "F").split(" ").map((part) => part[0]).slice(0, 2).join("")}
           </div>
 
           <div className="hidden text-left lg:block">

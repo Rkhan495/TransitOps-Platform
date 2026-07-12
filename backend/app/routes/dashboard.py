@@ -57,6 +57,8 @@ def get_dashboard_data():
                 t.trip_reference AS id, 
                 COALESCE(v.vehicle_name, '-') AS vehicle, 
                 COALESCE(d.driver_name, '-') AS driver, 
+                COALESCE(t.source, '-') AS source,
+                COALESCE(t.destination, '-') AS destination,
                 t.status 
             FROM trips t
             LEFT JOIN vehicles v ON t.vehicle_id = v.vehicle_id
@@ -65,16 +67,15 @@ def get_dashboard_data():
             LIMIT 5;
         """)
         recent_trips_raw = db.session.execute(trips_query).mappings().all()
-        
-        # Format for React: Add missing fields like source/destination
+
         recent_trips_data = []
         for trip in recent_trips_raw:
             recent_trips_data.append({
                 "id": trip['id'],
                 "vehicle": trip['vehicle'], 
                 "driver": trip['driver'],
-                "source": "Pune",       # Mocked for now. Update SQL if these columns exist in your DB.
-                "destination": "Mumbai", # Mocked for now. Update SQL if these columns exist in your DB.
+                "source": trip['source'],
+                "destination": trip['destination'],
                 "status": trip['status']
             })
 
@@ -114,7 +115,10 @@ def get_dashboard_data():
         monthly_result = db.session.execute(monthly_query).mappings().all()
         
         # Pre-fill the array so the UI chart doesn't look empty during the hackathon
-        default_months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]
+        default_months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ]
         monthly_dict = {m: 0 for m in default_months}
         
         # Override the 0s with real data from the database
@@ -130,7 +134,7 @@ def get_dashboard_data():
             "dashboardKPIs": dashboard_kpis,
             "recentTripsData": recent_trips_data,
             "vehicleStatusData": vehicle_status_data,
-            "monthlyTripsData": monthly_trips_data  # <--- Add the new data here
+            "monthlyTripsData": monthly_trips_data
         }
 
         return jsonify(dashboard_payload), 200
